@@ -1,43 +1,179 @@
 <template>
-  <q-layout view="lHh Lpr lFf">
-    <q-header elevated>
-      <q-toolbar>
-        <q-btn
-          flat
-          dense
-          round
-          icon="menu"
-          aria-label="Menu"
-          @click="toggleLeftDrawer"
-        />
+  <q-layout view="lHh LpR lFf">
+    <div>
+      <q-header class="bg-white text-primary shadow-2">
+        <q-toolbar>
+          <q-btn
+            flat
+            dense
+            round
+            icon="menu"
+            aria-label="Menu"
+            @click="toggleLeftDrawer"
+            class="q-mr-sm"
+          />
+          <q-toolbar-title class="text-h6"> SYSFUN FUNNEL </q-toolbar-title>
 
-        <q-toolbar-title>
-          Quasar App
-        </q-toolbar-title>
+          <q-btn
+            round
+            flat
+            icon="notifications"
+            aria-label="Notifications"
+            class="q-mr-sm"
+          />
+          <q-btn
+            round
+            flat
+            icon="settings"
+            aria-label="Settings"
+            class="q-mr-sm"
+          />
+          <q-btn round flat>
+            <q-avatar size="30px">
+              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              <q-menu>
+                <div class="row no-wrap q-pa-md">
+                  <div class="column">
+                    <div class="text-h6 q-mb-md">Settings</div>
+                    <q-toggle v-model="mobileData" label="Use Mobile Data" />
+                    <q-toggle v-model="bluetooth" label="Bluetooth" />
+                  </div>
 
-        <div>Quasar v{{ $q.version }}</div>
-      </q-toolbar>
-    </q-header>
+                  <q-separator vertical inset class="q-mx-lg" />
 
-    <q-drawer
-      v-model="leftDrawerOpen"
-      show-if-above
-      bordered
-    >
-      <q-list>
-        <q-item-label
-          header
+                  <div class="column items-center">
+                    <q-avatar size="72px">
+                      <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+                    </q-avatar>
+
+                    <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
+
+                    <q-btn
+                      color="primary"
+                      label="Logout"
+                      push
+                      size="sm"
+                      v-close-popup
+                      to="/login"
+                    />
+                  </div>
+                </div>
+              </q-menu>
+            </q-avatar>
+          </q-btn>
+        </q-toolbar>
+      </q-header>
+    </div>
+    <div>
+      <q-drawer v-model="leftDrawerOpen" show-if-above bordered>
+        <q-scroll-area
+          style="
+            height: calc(100% - 150px);
+            margin-top: 150px;
+            border-right: 1px solid #ddd;
+          "
         >
-          Essential Links
-        </q-item-label>
+          <q-list padding>
+            <q-item clickable v-ripple to="/index">
+              <q-item-section avatar>
+                <q-icon name="dashboard" />
+              </q-item-section>
+              <q-item-section> Dashboard </q-item-section>
+            </q-item>
+            <q-item clickable v-ripple to="/perfil">
+              <q-item-section avatar>
+                <q-icon name="people" />
+              </q-item-section>
+              <q-item-section> Perfil </q-item-section>
+            </q-item>
 
-        <EssentialLink
-          v-for="link in linksList"
-          :key="link.title"
-          v-bind="link"
-        />
-      </q-list>
-    </q-drawer>
+            <!-- Módulo de Ventas -->
+            <q-expansion-item
+              label="Módulo de Ventas"
+              icon="monetization_on"
+              expand-separator
+            >
+              <q-list>
+                <q-item clickable v-ripple to="/ventas/clientes">
+                  <q-item-section avatar>
+                    <q-icon name="people" />
+                  </q-item-section>
+                  <q-item-section> Clientes </q-item-section>
+                </q-item>
+
+                <q-item clickable v-ripple to="/ventas/productos">
+                  <q-item-section avatar>
+                    <q-icon name="shopping_cart" />
+                  </q-item-section>
+                  <q-item-section> Productos </q-item-section>
+                </q-item>
+
+                <q-item clickable v-ripple to="/ventas/ventas">
+                  <q-item-section avatar>
+                    <q-icon name="attach_money" />
+                  </q-item-section>
+                  <q-item-section> Ventas </q-item-section>
+                </q-item>
+              </q-list>
+            </q-expansion-item>
+
+            <!-- Módulo de Desarrollo -->
+            <q-expansion-item
+              label="Módulo de Desarrollo"
+              icon="code"
+              expand-separator
+            >
+              <q-list>
+                <q-item clickable v-ripple to="/desarrollo/tareas">
+                  <q-item-section avatar>
+                    <q-icon name="task" />
+                  </q-item-section>
+                  <q-item-section> Tareas </q-item-section>
+                </q-item>
+
+                <q-item clickable v-ripple to="/desarrollo/proyectos">
+                  <q-item-section avatar>
+                    <q-icon name="folder" />
+                  </q-item-section>
+                  <q-item-section> Proyectos </q-item-section>
+                </q-item>
+
+                <q-item clickable v-ripple to="/desarrollo/equipos">
+                  <q-item-section avatar>
+                    <q-icon name="group" />
+                  </q-item-section>
+                  <q-item-section> Equipos </q-item-section>
+                </q-item>
+              </q-list>
+            </q-expansion-item>
+          </q-list>
+        </q-scroll-area>
+
+        <q-img
+          class="absolute-top"
+          src="../assets/Global Hitss/fondodrawer.jpg"
+          style="height: 150px"
+        >
+          <div class="absolute-bottom bg-transparent">
+            <q-avatar size="56px" class="q-mb-sm">
+              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+            </q-avatar>
+            <div class="text-weight-bold">Razvan Stoenescu</div>
+            <div>@rstoenescu</div>
+          </div>
+        </q-img>
+
+        <!-- Botón de Cerrar Sesión en la parte inferior -->
+        <div class="q-pa-md absolute-bottom-center" style="margin: auto">
+          <q-btn
+            color="primary"
+            icon="exit_to_app"
+            label="Cerrar Sesión"
+            to="/login"
+          />
+        </div>
+      </q-drawer>
+    </div>
 
     <q-page-container>
       <router-view />
@@ -46,61 +182,63 @@
 </template>
 
 <script setup>
-import { ref } from 'vue'
-import EssentialLink from 'components/EssentialLink.vue'
+import { ref } from "vue";
 
 defineOptions({
-  name: 'MainLayout'
-})
+  name: "MainLayout",
+});
 
-const linksList = [
-  {
-    title: 'Docs',
-    caption: 'quasar.dev',
-    icon: 'school',
-    link: 'https://quasar.dev'
-  },
-  {
-    title: 'Github',
-    caption: 'github.com/quasarframework',
-    icon: 'code',
-    link: 'https://github.com/quasarframework'
-  },
-  {
-    title: 'Discord Chat Channel',
-    caption: 'chat.quasar.dev',
-    icon: 'chat',
-    link: 'https://chat.quasar.dev'
-  },
-  {
-    title: 'Forum',
-    caption: 'forum.quasar.dev',
-    icon: 'record_voice_over',
-    link: 'https://forum.quasar.dev'
-  },
-  {
-    title: 'Twitter',
-    caption: '@quasarframework',
-    icon: 'rss_feed',
-    link: 'https://twitter.quasar.dev'
-  },
-  {
-    title: 'Facebook',
-    caption: '@QuasarFramework',
-    icon: 'public',
-    link: 'https://facebook.quasar.dev'
-  },
-  {
-    title: 'Quasar Awesome',
-    caption: 'Community Quasar projects',
-    icon: 'favorite',
-    link: 'https://awesome.quasar.dev'
-  }
-]
-
-const leftDrawerOpen = ref(false)
-
-function toggleLeftDrawer () {
-  leftDrawerOpen.value = !leftDrawerOpen.value
+const leftDrawerOpen = ref(false);
+const mobileData = ref(true);
+const bluetooth = ref(false);
+function toggleLeftDrawer() {
+  leftDrawerOpen.value = !leftDrawerOpen.value;
 }
 </script>
+
+<style scoped>
+.absolute-bottom-center {
+  position: absolute;
+  bottom: 0;
+  left: 50%; /* Centrar horizontalmente */
+  transform: translateX(-50%);
+  width: 100%;
+  padding: 16px;
+}
+
+/* Estilos para el toolbar */
+.q-header {
+  margin: 5px; /* Centramos horizontalmente */
+  border-radius: 10px; /* Esquinas redondeadas */
+  position: fixed;
+
+  background-color: rgba(
+    255,
+    255,
+    255,
+    0.9
+  ); /* Fondo blanco con transparencia */
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave para dar profundidad */
+  z-index: 10; /* Aseguramos que esté por encima de otros elementos */
+  padding: 10px 16px 10px 16px; /* Espaciado interno */
+
+  max-width: 100%; /* Ancho completo para dispositivos */
+
+  z-index: 10;
+  background-color: rgba(255, 255, 255, 0.9);
+  box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
+}
+.q-header .q-btn {
+  margin-right: 8px; /* Reducimos el espacio entre los botones */
+}
+
+.q-header .q-avatar {
+  width: 32px;
+  height: 32px; /* Tamaño más pequeño para el avatar */
+}
+
+/* Espaciado en el toolbar */
+.q-toolbar {
+  justify-content: space-between; /* Distribuye el contenido en la barra de herramientas */
+}
+</style>
