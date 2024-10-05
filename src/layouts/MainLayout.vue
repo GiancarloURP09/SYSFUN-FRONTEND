@@ -12,7 +12,7 @@
             @click="toggleLeftDrawer"
             class="q-mr-sm"
           />
-          <q-toolbar-title class="text-h6"> SYSFUN FUNNEL </q-toolbar-title>
+          <q-toolbar-title class="text-h6">SYSFUN SYSTEM</q-toolbar-title>
 
           <q-btn
             round
@@ -151,15 +151,18 @@
 
         <q-img
           class="absolute-top"
-          src="../assets/Global Hitss/fondodrawer.jpg"
+          src="https://img.freepik.com/fotos-premium/imagen-fondo-empresarial-cuadros-graficos-financieros_1021632-971.jpg?w=1380"
           style="height: 150px"
         >
-          <div class="absolute-bottom bg-transparent">
+          <div
+            class="absolute-bottom bg-transparent"
+            style="color: darkblue; font-size: medium"
+          >
             <q-avatar size="56px" class="q-mb-sm">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              <img src="/public/profile.svg" />
             </q-avatar>
-            <div class="text-weight-bold">Razvan Stoenescu</div>
-            <div>@rstoenescu</div>
+            <div class="text-weight-bold">Giancarlo Alvarez</div>
+            <div>giancarloag09@gmail.com</div>
           </div>
         </q-img>
 
