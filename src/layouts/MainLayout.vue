@@ -49,12 +49,11 @@
                     <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
 
                     <q-btn
-                      color="primary"
-                      label="Logout"
-                      push
-                      size="sm"
-                      v-close-popup
-                      to="/login"
+                      round
+                      flat
+                      icon="logout"
+                      aria-label="Cerrar Sesión"
+                      @click="cerrarSesion"
                     />
                   </div>
                 </div>
@@ -169,10 +168,11 @@
         <!-- Botón de Cerrar Sesión en la parte inferior -->
         <div class="q-pa-md absolute-bottom-center" style="margin: auto">
           <q-btn
-            color="primary"
-            icon="exit_to_app"
-            label="Cerrar Sesión"
-            to="/login"
+            round
+            flat
+            icon="logout"
+            aria-label="Cerrar Sesión"
+            @click="cerrarSesion"
           />
         </div>
       </q-drawer>
@@ -186,17 +186,24 @@
 
 <script setup>
 import { ref } from "vue";
-
+import { useAuthStore } from "../stores/auth";
+import { useRouter } from "vue-router"; // Importar useRouter
 defineOptions({
   name: "MainLayout",
 });
-
+const authStore = useAuthStore();
+const router = useRouter(); // Obtener la instancia del router
 const leftDrawerOpen = ref(false);
 const mobileData = ref(true);
 const bluetooth = ref(false);
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
+//Metodo para cerrar Sesion
+const cerrarSesion = () => {
+  authStore.clearToken();
+  router.push("/login"); // Redirigir al login después de cerrar sesión
+};
 </script>
 
 <style scoped>

@@ -6,8 +6,6 @@
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '30%' }"
         >
           <q-card-section>
-             
-
             <q-avatar size="103px" class="absolute-center shadow-10">
               <img src="profile.svg" />
             </q-avatar>
@@ -73,8 +71,10 @@
 import { ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
+import { useAuthStore } from "../stores/auth";
 
 const router = useRouter();
+const authStore = useAuthStore();
 const correo = ref(null);
 const contrasena = ref(null);
 
@@ -85,37 +85,39 @@ const iniciarSesion = async () => {
       contrasena: contrasena.value,
     });
 
-    // Almacenar el token en localStorage
-    localStorage.setItem("token", response.data.token);
+    // Almacenar el token en el store de Pinia
+    authStore.setToken(response.data.token);
 
     // Redirigir a la página principal
     router.push("/");
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
-    // Manejar el error, por ejemplo, mostrar un mensaje al usuario
-    if (error.response) {
-      alert(error.response.data.mensaje);
-    } else {
-      alert("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+
+    let mensajeError =
+      "Error al iniciar sesión. Por favor, inténtalo de nuevo.";
+    if (error.response && error.response.data && error.response.data.mensaje) {
+      mensajeError = error.response.data.mensaje;
     }
+
+    alert(mensajeError);
   }
 };
 </script>
 
 <style>
 .bg-image {
-  background-image: url("../assets/fondolaptop.jpg"); /* Cambia la ruta a tu imagen de tecnología */
-  background-size: cover; /* Mantener la imagen cubriendo toda la vista */
-  background-position: center; /* Centrar la imagen */
-  background-repeat: no-repeat; /* Evitar que la imagen se repita */
-  min-height: 100vh; /* Asegúrate de que la altura cubra toda la vista */
-  height: 100%; /* Agregar esta línea */
+  background-image: url("../assets/fondolaptop.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  min-height: 100vh;
+  height: 100%;
 }
 
 /* Media Query para dispositivos móviles */
 @media (max-width: 600px) {
   .bg-image {
-    background-size: cover; /* Ajustar la imagen para que esté completamente visible */
+    background-size: cover;
   }
 }
 </style>
