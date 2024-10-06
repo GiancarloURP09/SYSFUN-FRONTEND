@@ -6,6 +6,8 @@
           v-bind:style="$q.screen.lt.sm ? { width: '80%' } : { width: '30%' }"
         >
           <q-card-section>
+             
+
             <q-avatar size="103px" class="absolute-center shadow-10">
               <img src="profile.svg" />
             </q-avatar>
@@ -19,23 +21,36 @@
             </div>
           </q-card-section>
           <q-card-section>
-            <q-form class="q-gutter-md">
-              <q-input filled v-model="username" label="Username" lazy-rules />
+            <q-form @submit.prevent="iniciarSesion" class="q-gutter-md">
+              <q-input
+                filled
+                v-model="correo"
+                label="Correo Electrónico"
+                lazy-rules
+                :rules="[
+                  (val) =>
+                    (val && val.length > 0) ||
+                    'Por favor ingrese su correo electrónico',
+                ]"
+              />
               <q-input
                 type="password"
                 filled
-                v-model="password"
-                label="Password"
+                v-model="contrasena"
+                label="Contraseña"
                 lazy-rules
+                :rules="[
+                  (val) =>
+                    (val && val.length > 0) ||
+                    'Por favor ingrese su contraseña',
+                ]"
               />
-              <q-checkbox v-model="rememberMe" label="Recuerdame" />
               <div class="q-mt-md">
                 <q-btn
                   label="Iniciar Sesion"
                   type="submit"
                   color="primary"
                   class="full-width"
-                  to="/"
                 />
                 <q-btn
                   label="Restablecer Contraseña"
@@ -54,19 +69,37 @@
   </q-layout>
 </template>
 
-<script>
-import { defineComponent } from "vue";
+<script setup>
 import { ref } from "vue";
+import axios from "axios";
+import { useRouter } from "vue-router";
 
-export default defineComponent({
-  setup() {
-    return {
-      username: ref("Pratik"),
-      password: ref("12345"),
-      rememberMe: ref(false),
-    };
-  },
-});
+const router = useRouter();
+const correo = ref(null);
+const contrasena = ref(null);
+
+const iniciarSesion = async () => {
+  try {
+    const response = await axios.post("http://localhost:4000/auth/login", {
+      correo: correo.value,
+      contrasena: contrasena.value,
+    });
+
+    // Almacenar el token en localStorage
+    localStorage.setItem("token", response.data.token);
+
+    // Redirigir a la página principal
+    router.push("/");
+  } catch (error) {
+    console.error("Error al iniciar sesión:", error);
+    // Manejar el error, por ejemplo, mostrar un mensaje al usuario
+    if (error.response) {
+      alert(error.response.data.mensaje);
+    } else {
+      alert("Error al iniciar sesión. Por favor, inténtalo de nuevo.");
+    }
+  }
+};
 </script>
 
 <style>
