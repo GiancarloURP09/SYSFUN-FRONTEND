@@ -30,7 +30,8 @@
           />
           <q-btn round flat>
             <q-avatar size="30px">
-              <img src="https://cdn.quasar.dev/img/boy-avatar.png" />
+              <img v-if="imagenUsuario" :src="imagenUsuario" />
+              <img v-else src="/public/profile.svg" />
               <q-menu>
                 <div class="row no-wrap q-pa-md">
                   <div class="column">
@@ -42,12 +43,18 @@
                   <q-separator vertical inset class="q-mx-lg" />
 
                   <div class="column items-center">
-                    <q-avatar size="72px">
-                      <img src="https://cdn.quasar.dev/img/avatar4.jpg" />
+                    <q-avatar size="72px" class="q-mb-sm">
+                      <img v-if="imagenUsuario" :src="imagenUsuario" />
+                      <img v-else src="/public/profile.svg" />
                     </q-avatar>
 
-                    <div class="text-subtitle1 q-mt-md q-mb-xs">John Doe</div>
-
+                    <div
+                      v-if="authStore.usuario"
+                      class="text-subtitle1 q-mt-md q-mb-xs"
+                    >
+                      {{ authStore.usuario.nombres }}
+                      {{ authStore.usuario.apellidos }}
+                    </div>
                     <q-btn
                       round
                       flat
