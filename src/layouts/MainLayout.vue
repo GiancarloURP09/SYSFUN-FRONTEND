@@ -158,7 +158,8 @@
             style="color: darkblue; font-size: medium"
           >
             <q-avatar size="56px" class="q-mb-sm">
-              <img src="/public/profile.svg" />
+              <img v-if="imagenUsuario" :src="imagenUsuario" />
+              <img v-else src="/public/profile.svg" />
             </q-avatar>
             <div v-if="authStore.usuario" class="text-weight-bold">
               {{ authStore.usuario.nombres }} {{ authStore.usuario.apellidos }}
@@ -187,9 +188,11 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import { useAuthStore } from "../stores/auth";
 import { useRouter } from "vue-router"; // Importar useRouter
+import axios from "axios";
+
 defineOptions({
   name: "MainLayout",
 });
@@ -198,6 +201,8 @@ const router = useRouter(); // Obtener la instancia del router
 const leftDrawerOpen = ref(false);
 const mobileData = ref(true);
 const bluetooth = ref(false);
+const imagenUsuario = ref(null); // Variable para almacenar la URL de la imagen
+
 function toggleLeftDrawer() {
   leftDrawerOpen.value = !leftDrawerOpen.value;
 }
@@ -206,6 +211,25 @@ const cerrarSesion = () => {
   authStore.clearToken();
   router.push("/login"); // Redirigir al login después de cerrar sesión
 };
+onMounted(async () => {
+  if (authStore.usuario) {
+    try {
+      const response = await axios.get(
+        `http://localhost:4000/auth/imagen/${authStore.usuario._id}`,
+        {
+          headers: {
+            Authorization: authStore.token,
+          },
+          responseType: "blob", // Especificar que la respuesta es un blob
+        },
+      );
+      const imageUrl = URL.createObjectURL(response.data); // Crear una URL para el blob
+      imagenUsuario.value = imageUrl;
+    } catch (error) {
+      console.error("Error al obtener la imagen del usuario:", error);
+    }
+  }
+});
 </script>
 
 <style scoped>

@@ -1,10 +1,23 @@
 import { defineStore } from "pinia";
 
 export const useAuthStore = defineStore("auth", {
-  state: () => ({
-    token: localStorage.getItem("token") || null,
-    usuario: null, // Nueva variable para almacenar los datos del usuario
-  }),
+  state: () => {
+    // Intentar obtener el usuario de localStorage
+    let usuario = null;
+    const usuarioStored = localStorage.getItem("usuario");
+    if (usuarioStored) {
+      try {
+        usuario = JSON.parse(usuarioStored);
+      } catch (error) {
+        console.error("Error al analizar el usuario de localStorage:", error);
+      }
+    }
+
+    return {
+      token: localStorage.getItem("token") || null,
+      usuario: usuario,
+    };
+  },
   actions: {
     setToken(token) {
       this.token = token;
@@ -12,12 +25,13 @@ export const useAuthStore = defineStore("auth", {
     },
     clearToken() {
       this.token = null;
-      this.usuario = null; // Limpiar los datos del usuario al cerrar sesión
+      this.usuario = null;
       localStorage.removeItem("token");
+      localStorage.removeItem("usuario"); // Eliminar el usuario de localStorage
     },
     setUsuario(usuario) {
-      // Nueva acción para guardar los datos del usuario
       this.usuario = usuario;
+      localStorage.setItem("usuario", JSON.stringify(usuario)); // Guardar el usuario en localStorage
     },
   },
 });
