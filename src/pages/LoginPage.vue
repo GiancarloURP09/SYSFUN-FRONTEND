@@ -87,7 +87,13 @@ const iniciarSesion = async () => {
 
     // Almacenar el token en el store de Pinia
     authStore.setToken(response.data.token);
-
+    // Obtener los datos del usuario
+    const usuarioResponse = await axios.get("http://localhost:4000/auth/me", {
+      headers: {
+        Authorization: response.data.token, // Incluir el token en la cabecera Authorization
+      },
+    });
+    authStore.setUsuario(usuarioResponse.data); // Guardar los datos del usuario en el store
     // Redirigir a la página principal
     router.push("/");
   } catch (error) {

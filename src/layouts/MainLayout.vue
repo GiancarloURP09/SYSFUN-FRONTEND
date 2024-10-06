@@ -160,8 +160,10 @@
             <q-avatar size="56px" class="q-mb-sm">
               <img src="/public/profile.svg" />
             </q-avatar>
-            <div class="text-weight-bold">Giancarlo Alvarez</div>
-            <div>giancarloag09@gmail.com</div>
+            <div v-if="authStore.usuario" class="text-weight-bold">
+              {{ authStore.usuario.nombres }} {{ authStore.usuario.apellidos }}
+            </div>
+            <div v-if="authStore.usuario">{{ authStore.usuario.correo }}</div>
           </div>
         </q-img>
 
