@@ -1,12 +1,7 @@
 <template>
   <q-page padding>
     <div class="q-gutter-y-md">
-      <!-- <q-btn
-        label="Crear Usuario"
-        color="primary"
-        @click.stop="mostrarDialogoCrear = true"
-      /> -->
-      <q-btn label="Prompt" color="primary" @click="prompt = true" />
+      <q-btn label="Crear Usuario" color="primary" @click="prompt = true" />
       <q-dialog v-model="prompt" persistent>
         <q-card style="min-width: 750px">
           <q-card-section>
@@ -93,6 +88,7 @@
                   { label: 'Otro', value: 'Otro' },
                 ]"
                 label="Tipo de Documento"
+                emit-value
                 :rules="[
                   (val) => val || 'Por favor seleccione un tipo de documento',
                 ]"
@@ -114,10 +110,22 @@
                 label="Fecha de Nacimiento"
                 type="date"
               />
+
+              <q-file
+                v-model="imagenColaborador"
+                label="Imagen de Colaborador"
+                accept=".jpg, .jpeg, .png"
+              />
             </q-form>
           </q-card-section>
           <q-card-actions align="right">
-            <q-btn flat label="Cancelar" color="primary" v-close-popup />
+            <q-btn
+              flat
+              label="Cancelar"
+              color="primary"
+              v-close-popup
+              @click="prompt = false"
+            />
             <q-btn
               flat
               label="Guardar"
@@ -157,13 +165,6 @@
       </q-table>
     </div>
 
-    <q-dialog v-model="mostrarDialogoCrear">
-      <CrearUsuario
-        @close="mostrarDialogoCrear = false"
-        @usuario-creado="obtenerUsuarios"
-      />
-    </q-dialog>
-
     <q-dialog v-model="mostrarDialogoEditar">
       <EditarUsuario
         :usuario-id="usuarioAEditar"
@@ -177,6 +178,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+
 const prompt = ref(false);
 const usuarios = ref([]);
 
@@ -192,6 +194,7 @@ const rol = ref(null);
 const tipoDocumento = ref(null);
 const numeroDocumento = ref(null);
 const fechaNacimiento = ref(null);
+const imagenColaborador = ref(null); // Variable para la imagen
 const roles = ref([]);
 //
 
@@ -206,7 +209,7 @@ const columnas = [
   },
   { name: "acciones", label: "Acciones" },
 ];
-const mostrarDialogoCrear = ref(false);
+
 const mostrarDialogoEditar = ref(false);
 const usuarioAEditar = ref(null);
 
@@ -268,7 +271,7 @@ const crearUsuario = async () => {
         nombre_usuario: nombreUsuario.value,
         contrasena: contrasena.value,
         rol: rol.value,
-        tipoDocumento: tipoDocumento.value,
+        tipoDocumento: tipoDocumento.value, // Enviar como string
         numeroDocumento: numeroDocumento.value,
         fecha_de_nacimiento: fechaNacimiento.value,
       },
@@ -280,7 +283,7 @@ const crearUsuario = async () => {
     );
     console.log("Usuario creado:", response.data);
     emit("usuario-creado");
-    emit("close");
+    prompt.value = false; // Cerrar el diálogo
     // Limpiar los campos del formulario después de crear el usuario
     nombre.value = "";
     apellido.value = "";
@@ -291,6 +294,7 @@ const crearUsuario = async () => {
     tipoDocumento.value = null;
     numeroDocumento.value = "";
     fechaNacimiento.value = null;
+    imagenColaborador.value = null; // Limpiar la imagen
   } catch (error) {
     console.error("Error al crear el usuario:", error);
     // Manejar el error, mostrar un mensaje al usuario
