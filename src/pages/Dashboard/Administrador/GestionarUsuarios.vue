@@ -150,7 +150,10 @@
               flat
               round
               dense
-              @click="editarUsuario(props.row._id)"
+              @click="
+                mostrarDialogoEditar = true;
+                usuarioAEditar = props.row._id;
+              "
             />
             <q-btn
               icon="delete"
@@ -164,19 +167,127 @@
         </template>
       </q-table>
     </div>
-
-    <q-dialog v-model="mostrarDialogoEditar">
-      <EditarUsuario
-        :usuario-id="usuarioAEditar"
-        @close="mostrarDialogoEditar = false"
-        @usuario-actualizado="obtenerUsuarios"
-      />
+    <!--Menu Editar Usuario-->
+    <q-dialog v-model="mostrarDialogoEditar" persistent>
+      <q-card style="min-width: 750px">
+        <q-card-section>
+          <div class="text-h6">Editar Usuario</div>
+        </q-card-section>
+        <q-card-section class="q-gutter-md">
+          <q-form @submit.prevent="actualizarUsuario">
+            <q-input
+              filled
+              v-model="nombreEdit"
+              label="Nombres"
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (val && val.length > 0) || 'Por favor ingrese los nombres',
+              ]"
+            />
+            <q-input
+              filled
+              v-model="apellidoEdit"
+              label="Apellidos"
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (val && val.length > 0) || 'Por favor ingrese los apellidos',
+              ]"
+            />
+            <q-input
+              filled
+              v-model="correoEdit"
+              label="Correo Electrónico"
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (val && val.length > 0) ||
+                  'Por favor ingrese el correo electrónico',
+              ]"
+            />
+            <q-input
+              filled
+              v-model="nombreUsuarioEdit"
+              label="Nombre de Usuario"
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (val && val.length > 0) ||
+                  'Por favor ingrese el nombre de usuario',
+              ]"
+            />
+            <q-select
+              filled
+              v-model="rolEdit"
+              :options="roles"
+              label="Rol"
+              option-value="_id"
+              option-label="nombre"
+              emit-value
+              map-options
+              :rules="[(val) => val || 'Por favor seleccione un rol']"
+            />
+            <q-select
+              filled
+              v-model="tipoDocumentoEdit"
+              :options="[
+                { label: 'DNI', value: 'DNI' },
+                { label: 'Pasaporte', value: 'Pasaporte' },
+                {
+                  label: 'Carnet de Extranjería',
+                  value: 'Carnet de Extranjería',
+                },
+                { label: 'Otro', value: 'Otro' },
+              ]"
+              label="Tipo de Documento"
+              emit-value
+              :rules="[
+                (val) => val || 'Por favor seleccione un tipo de documento',
+              ]"
+            />
+            <q-input
+              filled
+              v-model="numeroDocumentoEdit"
+              label="Número de Documento"
+              lazy-rules
+              :rules="[
+                (val) =>
+                  (val && val.length > 0) ||
+                  'Por favor ingrese el número de documento',
+              ]"
+            />
+            <q-input
+              filled
+              v-model="fechaNacimientoEdit"
+              label="Fecha de Nacimiento"
+              type="date"
+            />
+          </q-form>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Cancelar"
+            color="primary"
+            v-close-popup
+            @click="mostrarDialogoEditar = false"
+          />
+          <q-btn
+            flat
+            label="Guardar"
+            color="primary"
+            type="submit"
+            @click="actualizarUsuario"
+          />
+        </q-card-actions>
+      </q-card>
     </q-dialog>
   </q-page>
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import axios from "axios";
 
 const prompt = ref(false);
@@ -213,6 +324,17 @@ const columnas = [
 const mostrarDialogoEditar = ref(false);
 const usuarioAEditar = ref(null);
 
+// Editar Usuario
+const nombreEdit = ref("");
+const apellidoEdit = ref("");
+const correoEdit = ref("");
+const nombreUsuarioEdit = ref("");
+// const contrasenaEdit = ref(""); // No se edita la contraseña
+const rolEdit = ref(null);
+const tipoDocumentoEdit = ref(null);
+const numeroDocumentoEdit = ref(null);
+const fechaNacimientoEdit = ref(null);
+
 const obtenerUsuarios = async () => {
   try {
     const response = await axios.get("http://localhost:4000/auth/usuarios", {
@@ -229,6 +351,8 @@ const obtenerUsuarios = async () => {
 const editarUsuario = (id) => {
   usuarioAEditar.value = id;
   mostrarDialogoEditar.value = true;
+  // Obtener los datos del usuario y rellenar el formulario de edición
+  obtenerUsuario(id);
 };
 
 const eliminarUsuario = async (id) => {
@@ -245,6 +369,7 @@ const eliminarUsuario = async (id) => {
     }
   }
 };
+
 const obtenerRoles = async () => {
   try {
     const response = await axios.get("http://localhost:4000/roles", {
@@ -271,7 +396,7 @@ const crearUsuario = async () => {
         nombre_usuario: nombreUsuario.value,
         contrasena: contrasena.value,
         rol: rol.value,
-        tipoDocumento: tipoDocumento.value, // Enviar como string
+        tipoDocumento: tipoDocumento.value,
         numeroDocumento: numeroDocumento.value,
         fecha_de_nacimiento: fechaNacimiento.value,
       },
@@ -282,8 +407,9 @@ const crearUsuario = async () => {
       },
     );
     console.log("Usuario creado:", response.data);
-    emit("usuario-creado");
+    // emit("usuario-creado"); // No es necesario emitir el evento aquí
     prompt.value = false; // Cerrar el diálogo
+    obtenerUsuarios(); // Actualizar la lista de usuarios
     // Limpiar los campos del formulario después de crear el usuario
     nombre.value = "";
     apellido.value = "";
@@ -300,5 +426,57 @@ const crearUsuario = async () => {
     // Manejar el error, mostrar un mensaje al usuario
   }
 };
+
+const obtenerUsuario = async (id) => {
+  try {
+    const response = await axios.get(
+      `http://localhost:4000/auth/usuario/${id}`,
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
+    );
+    const usuario = response.data;
+    nombreEdit.value = usuario.nombres;
+    apellidoEdit.value = usuario.apellidos;
+    correoEdit.value = usuario.correo;
+    nombreUsuarioEdit.value = usuario.nombre_usuario;
+    rolEdit.value = usuario.rol._id;
+    tipoDocumentoEdit.value = usuario.tipoDocumento;
+    numeroDocumentoEdit.value = usuario.numeroDocumento;
+    fechaNacimientoEdit.value = usuario.fecha_de_nacimiento;
+  } catch (error) {
+    console.error("Error al obtener el usuario:", error);
+  }
+};
+
+const actualizarUsuario = async () => {
+  try {
+    await axios.put(
+      `http://localhost:4000/auth/usuario/${usuarioAEditar.value}`,
+      {
+        nombres: nombreEdit.value,
+        apellidos: apellidoEdit.value,
+        correo: correoEdit.value,
+        nombre_usuario: nombreUsuarioEdit.value,
+        rol: rolEdit.value,
+        tipoDocumento: tipoDocumentoEdit.value,
+        numeroDocumento: numeroDocumentoEdit.value,
+        fecha_de_nacimiento: fechaNacimientoEdit.value,
+      },
+      {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+        },
+      },
+    );
+    mostrarDialogoEditar.value = false; // Cerrar el diálogo
+    obtenerUsuarios(); // Actualizar la lista de usuarios
+  } catch (error) {
+    console.error("Error al actualizar el usuario:", error);
+  }
+};
+
 onMounted(obtenerUsuarios);
 </script>
