@@ -11,6 +11,11 @@ const routes = [
         path: "/perfil",
         component: () => import("pages/Dashboard/PerfilUsuario.vue"),
       },
+      {
+        path: "/gestionar-usuarios",
+        component: () =>
+          import("pages/Dashboard/Administrador/GestionarUsuarios.vue"),
+      },
     ],
   },
   {

@@ -122,7 +122,35 @@
                 </q-item>
               </q-list>
             </q-expansion-item>
+            <!-- Módulo de Administracion de Usuarios -->
+            <q-expansion-item
+              label="Administracion de Usuarios"
+              icon="account_circle"
+              expand-separator
+            >
+              <q-list>
+                <q-item clickable v-ripple to="/gestionar-usuarios">
+                  <q-item-section avatar>
+                    <q-icon name="people" />
+                  </q-item-section>
+                  <q-item-section> Gestionar Usuarios </q-item-section>
+                </q-item>
 
+                <q-item clickable v-ripple to="/ventas/productos">
+                  <q-item-section avatar>
+                    <q-icon name="shopping_cart" />
+                  </q-item-section>
+                  <q-item-section> Productos </q-item-section>
+                </q-item>
+
+                <q-item clickable v-ripple to="/ventas/ventas">
+                  <q-item-section avatar>
+                    <q-icon name="attach_money" />
+                  </q-item-section>
+                  <q-item-section> Ventas </q-item-section>
+                </q-item>
+              </q-list>
+            </q-expansion-item>
             <!-- Módulo de Desarrollo -->
             <q-expansion-item
               label="Módulo de Desarrollo"
