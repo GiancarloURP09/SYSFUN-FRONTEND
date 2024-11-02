@@ -1,7 +1,9 @@
 <template>
   <q-page padding>
     <div class="q-gutter-y-md">
-      <q-btn label="Crear Usuario" color="primary" @click="prompt = true" />
+      <div class="row justify-end">
+        <q-btn label="Crear Usuario" color="primary" @click="prompt = true" />
+      </div>
       <q-dialog v-model="prompt" persistent>
         <q-card style="min-width: 750px">
           <q-card-section>

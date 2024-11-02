@@ -279,10 +279,10 @@ onMounted(async () => {
 
 /* Estilos para el toolbar */
 .q-header {
-  margin: 5px; /* Centramos horizontalmente */
+  margin: 5px 20px 5px 5px; /* Centramos horizontalmente */
   border-radius: 10px; /* Esquinas redondeadas */
   position: fixed;
-
+  margin-left: 20px;
   background-color: rgba(
     255,
     255,
