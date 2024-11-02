@@ -139,7 +139,7 @@
         </q-card>
       </q-dialog>
       <q-table
-        title="Usuarios"
+        title="Gestionar Usuarios"
         :rows="usuarios"
         :columns="columnas"
         row-key="name"
