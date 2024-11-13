@@ -4,6 +4,7 @@
       <div class="row justify-end">
         <q-btn label="Crear Usuario" color="primary" @click="prompt = true" />
       </div>
+      <!--Dialogo Crear Usuario-->
       <q-dialog v-model="prompt" persistent>
         <q-card style="min-width: 750px">
           <q-card-section>
@@ -138,6 +139,8 @@
           </q-card-actions>
         </q-card>
       </q-dialog>
+      <!--Dialogo Crear Usuario-->
+
       <q-table
         title="Gestionar Usuarios"
         :rows="usuarios"
@@ -169,6 +172,29 @@
         </template>
       </q-table>
     </div>
+    <!--Dialog Eliminar Usuario-->
+    <q-dialog v-model="mostrarDialogoConfirmacion">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Confirmar Eliminación</div>
+        </q-card-section>
+
+        <q-card-section>
+          <p>¿Estás seguro de que quieres eliminar este usuario?</p>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancelar" color="primary" v-close-popup />
+          <q-btn
+            flat
+            label="Eliminar"
+            color="negative"
+            @click="confirmarEliminacion"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <!--Dialog Eliminar Usuario-->
     <!--Menu Editar Usuario-->
     <q-dialog v-model="mostrarDialogoEditar" persistent>
       <q-card style="min-width: 750px">
@@ -311,6 +337,8 @@ const imagenColaborador = ref(null); // Variable para la imagen
 const roles = ref([]);
 //
 
+const mostrarDialogoConfirmacion = ref(false);
+const usuarioAEliminar = ref(null);
 const columnas = [
   { name: "nombre", label: "Nombre", field: "nombres" },
   { name: "apellido", label: "Apellido", field: "apellidos" },
@@ -358,20 +386,25 @@ const editarUsuario = (id) => {
 };
 
 const eliminarUsuario = async (id) => {
-  if (confirm("¿Estás seguro de que quieres eliminar este usuario?")) {
-    try {
-      await axios.delete(`http://localhost:4000/auth/usuario/${id}`, {
+  usuarioAEliminar.value = id;
+  mostrarDialogoConfirmacion.value = true;
+};
+const confirmarEliminacion = async () => {
+  try {
+    await axios.delete(
+      `http://localhost:4000/auth/usuario/${usuarioAEliminar.value}`,
+      {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
         },
-      });
-      obtenerUsuarios();
-    } catch (error) {
-      console.error("Error al eliminar el usuario:", error);
-    }
+      },
+    );
+    obtenerUsuarios(); // Actualizar la lista de usuarios
+    mostrarDialogoConfirmacion.value = false; // Cerrar el diálogo
+  } catch (error) {
+    console.error("Error al eliminar el usuario:", error);
   }
 };
-
 const obtenerRoles = async () => {
   try {
     const response = await axios.get("http://localhost:4000/roles", {
