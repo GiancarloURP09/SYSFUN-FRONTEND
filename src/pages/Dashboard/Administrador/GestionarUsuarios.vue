@@ -202,7 +202,7 @@
           <div class="text-h6">Editar Usuario</div>
         </q-card-section>
         <q-card-section class="q-gutter-md" v-if="obtenidoUsuario">
-          <q-form @submit.prevent="actualizarUsuario">
+          <q-form @submit.prevent="abrirConfirmacionEdicion">
             <q-input
               filled
               v-model="nombreEdit"
@@ -306,7 +306,35 @@
             label="Guardar"
             color="primary"
             type="submit"
-            @click="actualizarUsuario"
+            @click="abrirConfirmacionEdicion"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <!-- Diálogo de Confirmación de Edición -->
+    <q-dialog v-model="mostrarDialogoConfirmacionEdicion">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Confirmar Edición</div>
+        </q-card-section>
+        <q-card-section>
+          <p>
+            ¿Estás seguro de que quieres guardar los cambios de este usuario?
+          </p>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Cancelar"
+            color="primary"
+            v-close-popup
+            @click="mostrarDialogoConfirmacionEdicion = false"
+          />
+          <q-btn
+            flat
+            label="Confirmar"
+            color="primary"
+            @click="confirmarEdicion"
           />
         </q-card-actions>
       </q-card>
@@ -378,11 +406,21 @@ const obtenerUsuarios = async () => {
   }
 };
 
-const editarUsuario = (id) => {
-  usuarioAEditar.value = id;
-  mostrarDialogoEditar.value = true;
-  // Obtener los datos del usuario y rellenar el formulario de edición
-  obtenerUsuario(id);
+// const editarUsuario = (id) => {
+//   usuarioAEditar.value = id;
+//   mostrarDialogoEditar.value = true;
+//   // Obtener los datos del usuario y rellenar el formulario de edición
+//   obtenerUsuario(id);
+// };
+const mostrarDialogoConfirmacionEdicion = ref(false);
+
+const abrirConfirmacionEdicion = () => {
+  mostrarDialogoConfirmacionEdicion.value = true;
+};
+
+const confirmarEdicion = () => {
+  mostrarDialogoConfirmacionEdicion.value = false;
+  actualizarUsuario(); // Llamar a la función de actualización
 };
 
 const eliminarUsuario = async (id) => {
