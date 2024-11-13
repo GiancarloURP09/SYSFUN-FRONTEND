@@ -205,7 +205,7 @@
           <q-form @submit.prevent="actualizarUsuario">
             <q-input
               filled
-              v-model="obtenidoUsuario.nombres"
+              v-model="nombreEdit"
               label="Nombres"
               lazy-rules
               :rules="[
