@@ -389,27 +389,29 @@ onMounted(obtenerRoles);
 
 const crearUsuario = async () => {
   try {
+    const formData = new FormData();
+    formData.append("nombres", nombre.value);
+    formData.append("apellidos", apellido.value);
+    formData.append("correo", correo.value);
+    formData.append("nombre_usuario", nombreUsuario.value);
+    formData.append("contrasena", contrasena.value);
+    formData.append("rol", rol.value);
+    formData.append("tipoDocumento", tipoDocumento.value);
+    formData.append("numeroDocumento", numeroDocumento.value);
+    formData.append("fecha_de_nacimiento", fechaNacimiento.value);
+    formData.append("foto_de_colaborador", imagenColaborador.value);
+
     const response = await axios.post(
       "http://localhost:4000/auth/registro",
-      {
-        nombres: nombre.value,
-        apellidos: apellido.value,
-        correo: correo.value,
-        nombre_usuario: nombreUsuario.value,
-        contrasena: contrasena.value,
-        rol: rol.value,
-        tipoDocumento: tipoDocumento.value,
-        numeroDocumento: numeroDocumento.value,
-        fecha_de_nacimiento: fechaNacimiento.value,
-      },
+      formData,
       {
         headers: {
           Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "multipart/form-data",
         },
       },
     );
     console.log("Usuario creado:", response.data);
-    // emit("usuario-creado"); // No es necesario emitir el evento aquí
     prompt.value = false; // Cerrar el diálogo
     obtenerUsuarios(); // Actualizar la lista de usuarios
     // Limpiar los campos del formulario después de crear el usuario
