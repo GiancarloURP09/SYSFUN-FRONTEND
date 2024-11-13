@@ -201,11 +201,11 @@
         <q-card-section>
           <div class="text-h6">Editar Usuario</div>
         </q-card-section>
-        <q-card-section class="q-gutter-md">
+        <q-card-section class="q-gutter-md" v-if="obtenidoUsuario">
           <q-form @submit.prevent="actualizarUsuario">
             <q-input
               filled
-              v-model="nombreEdit"
+              v-model="obtenidoUsuario.nombres"
               label="Nombres"
               lazy-rules
               :rules="[
@@ -463,7 +463,15 @@ const crearUsuario = async () => {
     // Manejar el error, mostrar un mensaje al usuario
   }
 };
-
+const obtenidoUsuario = ref({});
+watch(usuarioAEditar, (nuevoId) => {
+  if (nuevoId) {
+    obtenerUsuario(nuevoId);
+  } else {
+    // Si se cierra el diálogo, limpiar los datos
+    obtenidoUsuario.value = null;
+  }
+});
 const obtenerUsuario = async (id) => {
   try {
     const response = await axios.get(
@@ -483,6 +491,7 @@ const obtenerUsuario = async (id) => {
     tipoDocumentoEdit.value = usuario.tipoDocumento;
     numeroDocumentoEdit.value = usuario.numeroDocumento;
     fechaNacimientoEdit.value = usuario.fecha_de_nacimiento;
+    obtenidoUsuario.value = response.data;
   } catch (error) {
     console.error("Error al obtener el usuario:", error);
   }
