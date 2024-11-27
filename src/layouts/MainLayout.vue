@@ -136,11 +136,11 @@
                   <q-item-section> Gestionar Usuarios </q-item-section>
                 </q-item>
 
-                <q-item clickable v-ripple to="/ventas/productos">
+                <q-item clickable v-ripple to="/gestionar-areas">
                   <q-item-section avatar>
-                    <q-icon name="shopping_cart" />
+                    <q-icon name="business" />
                   </q-item-section>
-                  <q-item-section> Productos </q-item-section>
+                  <q-item-section> Gestión de Áreas </q-item-section>
                 </q-item>
 
                 <q-item clickable v-ripple to="/ventas/ventas">
