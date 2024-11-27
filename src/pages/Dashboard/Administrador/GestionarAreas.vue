@@ -31,7 +31,7 @@
               round
               icon="delete"
               color="negative"
-              @click="eliminarArea(props.row._id)"
+              @click="mostrarConfirmacionEliminar(props.row)"
             />
           </template>
         </q-table>
@@ -40,7 +40,7 @@
 
     <!-- Modal para Crear/Editar Área -->
     <q-dialog v-model="mostrarModal">
-      <q-card>
+      <q-card style="width: 600px; max-width: 90vw; padding: 20px">
         <q-card-section>
           <div class="text-h6">
             {{ modoEdicion ? "Editar Área" : "Crear Área" }}
@@ -63,7 +63,35 @@
         </q-card-section>
         <q-card-actions align="right">
           <q-btn flat label="Cancelar" color="negative" @click="cerrarModal" />
-          <q-btn flat label="Guardar" color="primary" @click="guardarArea" />
+          <q-btn
+            flat
+            label="Guardar"
+            color="primary"
+            @click="confirmarGuardar"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+
+    <!-- Diálogo de Confirmación -->
+    <q-dialog v-model="mostrarConfirmacion">
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">{{ mensajeConfirmacion }}</div>
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Cancelar"
+            color="negative"
+            @click="cerrarConfirmacion"
+          />
+          <q-btn
+            flat
+            label="Confirmar"
+            color="primary"
+            @click="confirmarAccion"
+          />
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -89,9 +117,12 @@ const columnas = [
 ];
 
 const mostrarModal = ref(false);
+const mostrarConfirmacion = ref(false);
+const mensajeConfirmacion = ref("");
 const areaForm = ref({ nombre: "", descripcion: "" });
 const modoEdicion = ref(false);
 const areaSeleccionada = ref(null);
+let accionPendiente = null;
 
 const cargarAreas = async () => {
   try {
@@ -118,6 +149,14 @@ const editarArea = (area) => {
   areaForm.value = { ...area };
   modoEdicion.value = true;
   mostrarModal.value = true;
+};
+
+const confirmarGuardar = () => {
+  mensajeConfirmacion.value = modoEdicion.value
+    ? "¿Está seguro de que desea guardar los cambios en esta área?"
+    : "¿Está seguro de que desea crear esta área?";
+  accionPendiente = guardarArea;
+  mostrarConfirmacion.value = true;
 };
 
 const guardarArea = async () => {
@@ -150,6 +189,12 @@ const guardarArea = async () => {
   }
 };
 
+const mostrarConfirmacionEliminar = (area) => {
+  mensajeConfirmacion.value = "¿Está seguro de que desea eliminar esta área?";
+  accionPendiente = () => eliminarArea(area._id);
+  mostrarConfirmacion.value = true;
+};
+
 const eliminarArea = async (id) => {
   try {
     await axios.delete(`http://localhost:4000/areas/${id}`, {
@@ -165,8 +210,20 @@ const eliminarArea = async (id) => {
   }
 };
 
+const confirmarAccion = async () => {
+  mostrarConfirmacion.value = false;
+  if (accionPendiente) {
+    await accionPendiente();
+  }
+};
+
 const cerrarModal = () => {
   mostrarModal.value = false;
+};
+
+const cerrarConfirmacion = () => {
+  mostrarConfirmacion.value = false;
+  accionPendiente = null;
 };
 
 onMounted(cargarAreas);
