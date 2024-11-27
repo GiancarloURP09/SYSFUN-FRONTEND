@@ -7,9 +7,10 @@
           label="Crear Área"
           color="primary"
           @click="abrirModalCrear"
-          class="q-ml-md"
+          class="q-ml-md row justify-end"
         />
       </q-card-section>
+
       <q-separator />
       <q-card-section>
         <q-table
@@ -19,20 +20,24 @@
           no-data-label="No hay áreas disponibles"
         >
           <template v-slot:body-cell-acciones="props">
-            <q-btn
-              flat
-              round
-              icon="edit"
-              color="primary"
-              @click="editarArea(props.row)"
-            />
-            <q-btn
-              flat
-              round
-              icon="delete"
-              color="negative"
-              @click="mostrarConfirmacionEliminar(props.row)"
-            />
+            <q-td :props="props">
+              <q-btn
+                flat
+                round
+                dense
+                icon="edit"
+                color="primary"
+                @click="editarArea(props.row)"
+              />
+              <q-btn
+                flat
+                round
+                dense
+                icon="delete"
+                color="negative"
+                @click="mostrarConfirmacionEliminar(props.row)"
+              />
+            </q-td>
           </template>
         </q-table>
       </q-card-section>

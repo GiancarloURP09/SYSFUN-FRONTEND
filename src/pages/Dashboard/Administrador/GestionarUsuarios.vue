@@ -1,5 +1,5 @@
 <template>
-  <q-page padding>
+  <q-page class="q-pa-md">
     <div class="q-gutter-y-md">
       <div class="row justify-end">
         <q-btn label="Crear Usuario" color="primary" @click="prompt = true" />
