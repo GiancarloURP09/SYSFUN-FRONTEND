@@ -143,11 +143,11 @@
                   <q-item-section> Gestión de Áreas </q-item-section>
                 </q-item>
 
-                <q-item clickable v-ripple to="/ventas/ventas">
+                <q-item clickable v-ripple to="/gestionar-roles">
                   <q-item-section avatar>
-                    <q-icon name="attach_money" />
+                    <q-icon name="user-role" />
                   </q-item-section>
-                  <q-item-section> Ventas </q-item-section>
+                  <q-item-section> Gestion de roles </q-item-section>
                 </q-item>
               </q-list>
             </q-expansion-item>

@@ -21,6 +21,11 @@ const routes = [
         component: () =>
           import("pages/Dashboard/Administrador/GestionarAreas.vue"),
       },
+      {
+        path: "/gestionar-roles",
+        component: () =>
+          import("pages/Dashboard/Administrador/GestionarRoles.vue"),
+      },
     ],
   },
   {
