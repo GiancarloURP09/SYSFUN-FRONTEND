@@ -1,18 +1,20 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row q-col-gutter-md">
-      <q-row>
-        <q-col cols="12">
-          <div class="text-h5">
-            Bienvenido, {{ authStore.usuario.nombres }}!
-          </div>
-        </q-col>
-      </q-row>
+      <div>
+        <q-row>
+          <q-col cols="12">
+            <div class="text-h5" style="padding: auto; color: turquoise">
+              Bienvenido, {{ authStore.usuario.nombres }}!
+            </div>
+          </q-col>
+        </q-row>
+      </div>
       <!-- Tarjeta: Total de Clientes -->
       <q-row>
         <q-col cols="12">
           <div class="text-h5">
-            <q-card class="col-2">
+            <q-card class="col-2" style="background-color: aquamarine">
               <q-card-section>
                 <div class="text-h6">Total de Clientes</div>
               </q-card-section>
@@ -28,7 +30,7 @@
         <q-col cols="12">
           <div class="text-h5">
             <!-- Tarjeta: Clientes Potenciales -->
-            <q-card class="col-3">
+            <q-card class="col-3" style="background-color: burlywood">
               <q-card-section>
                 <div class="text-h6">Clientes Potenciales</div>
               </q-card-section>
@@ -43,7 +45,7 @@
         <q-col cols="12">
           <div class="text-h5">
             <!-- Tarjeta: Total de Usuarios -->
-            <q-card class="col-3">
+            <q-card class="col-3" style="background-color: darkseagreen">
               <q-card-section>
                 <div class="text-h6">Total de Usuarios</div>
               </q-card-section>
@@ -58,7 +60,7 @@
         <q-col cols="12">
           <div class="text-h5">
             <!-- Tarjeta: Total de Áreas -->
-            <q-card class="col-3">
+            <q-card class="col-3" style="background-color: khaki">
               <q-card-section>
                 <div class="text-h6">Total de Áreas</div>
               </q-card-section>
