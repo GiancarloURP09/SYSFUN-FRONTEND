@@ -100,7 +100,7 @@
               expand-separator
             >
               <q-list>
-                <q-item clickable v-ripple to="/ventas/clientes">
+                <q-item clickable v-ripple to="/gestionar-clientes">
                   <q-item-section avatar>
                     <q-icon name="people" />
                   </q-item-section>

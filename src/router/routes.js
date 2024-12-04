@@ -26,6 +26,10 @@ const routes = [
         component: () =>
           import("pages/Dashboard/Administrador/GestionarRoles.vue"),
       },
+      {
+        path: "/gestionar-clientes",
+        component: () => import("pages/Dashboard/Ventas/GestionarClientes.vue"),
+      },
     ],
   },
   {
