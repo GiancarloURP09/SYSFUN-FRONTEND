@@ -1,45 +1,74 @@
 <template>
   <q-page class="q-pa-md">
     <div class="row q-col-gutter-md">
+      <q-row>
+        <q-col cols="12">
+          <div class="text-h5">
+            Bienvenido, {{ authStore.usuario.nombres }}!
+          </div>
+        </q-col>
+      </q-row>
       <!-- Tarjeta: Total de Clientes -->
-      <q-card class="col-3">
-        <q-card-section>
-          <div class="text-h6">Total de Clientes</div>
-        </q-card-section>
-        <q-card-section>
-          <div class="text-subtitle1">{{ totalClientes }}</div>
-        </q-card-section>
-      </q-card>
+      <q-row>
+        <q-col cols="12">
+          <div class="text-h5">
+            <q-card class="col-2">
+              <q-card-section>
+                <div class="text-h6">Total de Clientes</div>
+              </q-card-section>
+              <q-card-section>
+                <div class="text-subtitle1">{{ totalClientes }}</div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </q-col>
+      </q-row>
 
-      <!-- Tarjeta: Clientes Potenciales -->
-      <q-card class="col-3">
-        <q-card-section>
-          <div class="text-h6">Clientes Potenciales</div>
-        </q-card-section>
-        <q-card-section>
-          <div class="text-subtitle1">{{ clientesPotenciales }}</div>
-        </q-card-section>
-      </q-card>
-
-      <!-- Tarjeta: Total de Usuarios -->
-      <q-card class="col-3">
-        <q-card-section>
-          <div class="text-h6">Total de Usuarios</div>
-        </q-card-section>
-        <q-card-section>
-          <div class="text-subtitle1">{{ totalUsuarios }}</div>
-        </q-card-section>
-      </q-card>
-
-      <!-- Tarjeta: Total de Áreas -->
-      <q-card class="col-3">
-        <q-card-section>
-          <div class="text-h6">Total de Áreas</div>
-        </q-card-section>
-        <q-card-section>
-          <div class="text-subtitle1">{{ totalAreas }}</div>
-        </q-card-section>
-      </q-card>
+      <q-row>
+        <q-col cols="12">
+          <div class="text-h5">
+            <!-- Tarjeta: Clientes Potenciales -->
+            <q-card class="col-3">
+              <q-card-section>
+                <div class="text-h6">Clientes Potenciales</div>
+              </q-card-section>
+              <q-card-section>
+                <div class="text-subtitle1">{{ clientesPotenciales }}</div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </q-col>
+      </q-row>
+      <q-row>
+        <q-col cols="12">
+          <div class="text-h5">
+            <!-- Tarjeta: Total de Usuarios -->
+            <q-card class="col-3">
+              <q-card-section>
+                <div class="text-h6">Total de Usuarios</div>
+              </q-card-section>
+              <q-card-section>
+                <div class="text-subtitle1">{{ totalUsuarios }}</div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </q-col>
+      </q-row>
+      <q-row>
+        <q-col cols="12">
+          <div class="text-h5">
+            <!-- Tarjeta: Total de Áreas -->
+            <q-card class="col-3">
+              <q-card-section>
+                <div class="text-h6">Total de Áreas</div>
+              </q-card-section>
+              <q-card-section>
+                <div class="text-subtitle1">{{ totalAreas }}</div>
+              </q-card-section>
+            </q-card>
+          </div>
+        </q-col>
+      </q-row>
     </div>
 
     <div class="row q-mt-md">

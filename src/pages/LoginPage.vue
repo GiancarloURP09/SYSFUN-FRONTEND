@@ -95,7 +95,7 @@ const iniciarSesion = async () => {
     });
     authStore.setUsuario(usuarioResponse.data); // Guardar los datos del usuario en el store
     // Redirigir a la página principal
-    router.push("/");
+    router.push("/index");
   } catch (error) {
     console.error("Error al iniciar sesión:", error);
 
