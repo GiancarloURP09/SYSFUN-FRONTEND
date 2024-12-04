@@ -37,6 +37,15 @@
                 color="negative"
                 @click="mostrarConfirmacionEliminar(props.row)"
               />
+              <q-btn
+                flat
+                round
+                dense
+                icon="search"
+                color="accent"
+                @click="abrirEvaluacion(props.row)"
+                label="Evaluar"
+              />
             </q-td>
           </template>
         </q-table>
@@ -138,6 +147,53 @@
         </q-card-actions>
       </q-card>
     </q-dialog>
+
+    <!-- Diálogo de Evaluación -->
+    <q-dialog v-model="mostrarEvaluacion">
+      <q-card style="width: 600px; max-width: 90vw; padding: 20px">
+        <q-card-section>
+          <div class="text-h6">Evaluación de Cliente</div>
+        </q-card-section>
+        <q-card-section>
+          <q-input
+            v-model="clienteEvaluado.nombre"
+            label="Nombre"
+            filled
+            readonly
+          />
+          <q-input
+            v-model="clienteEvaluado.rubro"
+            label="Rubro"
+            filled
+            readonly
+          />
+          <q-input
+            v-model="clienteEvaluado.representante"
+            label="Representante"
+            filled
+            readonly
+          />
+          <q-toggle
+            v-model="clienteEvaluado.esPotencial"
+            label="Es Potencial"
+          />
+        </q-card-section>
+        <q-card-actions align="right">
+          <q-btn
+            flat
+            label="Cancelar"
+            color="negative"
+            @click="cerrarEvaluacion"
+          />
+          <q-btn
+            flat
+            label="Guardar Cambios"
+            color="primary"
+            @click="guardarEvaluacion"
+          />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </q-page>
 </template>
 
@@ -164,16 +220,10 @@ const columnas = [
     field: "representante",
   },
   {
-    name: "tipoDocumento",
-    label: "Tipo de Documento",
-    align: "left",
-    field: "tipoDocumento",
-  },
-  {
-    name: "numeroDocumento",
-    label: "Número de Documento",
-    align: "left",
-    field: "numeroDocumento",
+    name: "esPotencial",
+    label: "Es Potencial",
+    align: "center",
+    field: (row) => (row.esPotencial ? "Sí" : "No"),
   },
   { name: "acciones", label: "Acciones", align: "center" },
 ];
@@ -193,7 +243,8 @@ const modoEdicion = ref(false);
 const clienteSeleccionado = ref(null);
 const tiposDocumento = ["DNI", "RUC", "Pasaporte", "Carnet de Extranjería"];
 let accionPendiente = null;
-
+const clienteEvaluado = ref({});
+const mostrarEvaluacion = ref(false);
 const cargarClientes = async () => {
   try {
     const respuesta = await axios.get("http://localhost:4000/clientes", {
@@ -219,6 +270,30 @@ const cargarUsuarios = async () => {
     console.error("Error al cargar los usuarios:", error);
     alert("Hubo un error al cargar los usuarios.");
   }
+};
+const abrirEvaluacion = (cliente) => {
+  clienteEvaluado.value = { ...cliente };
+  mostrarEvaluacion.value = true;
+};
+
+const guardarEvaluacion = async () => {
+  try {
+    await axios.put(
+      `http://localhost:4000/clientes/${clienteEvaluado.value._id}`,
+      clienteEvaluado.value,
+      { headers: { Authorization: `Bearer ${authStore.token}` } },
+    );
+    alert("Evaluación guardada correctamente.");
+    cerrarEvaluacion();
+    cargarClientes();
+  } catch (error) {
+    console.error("Error al guardar la evaluación:", error);
+    alert("Hubo un error al guardar la evaluación.");
+  }
+};
+
+const cerrarEvaluacion = () => {
+  mostrarEvaluacion.value = false;
 };
 
 const abrirModalCrear = () => {
@@ -290,6 +365,21 @@ const eliminarCliente = async (id) => {
     alert("Hubo un error al eliminar el cliente.");
   }
 };
+const evaluarCliente = async (cliente) => {
+  try {
+    const respuesta = await axios.post(
+      `http://localhost:4000/clientes/${cliente._id}/evaluar`,
+      {},
+      { headers: { Authorization: `Bearer ${authStore.token}` } },
+    );
+    clienteEvaluado.value = respuesta.data.cliente;
+    mostrarEvaluacion.value = true;
+    cargarClientes();
+  } catch (error) {
+    console.error("Error al evaluar el cliente:", error);
+    alert("Hubo un error al evaluar el cliente.");
+  }
+};
 
 const confirmarAccion = async () => {
   mostrarConfirmacion.value = false;
@@ -316,5 +406,11 @@ onMounted(() => {
 <style scoped>
 .q-pa-md {
   padding: 20px;
+}
+.text-positive {
+  color: green;
+}
+.text-negative {
+  color: red;
 }
 </style>
