@@ -107,9 +107,9 @@
                   <q-item-section> Clientes </q-item-section>
                 </q-item>
 
-                <q-item clickable v-ripple to="/ventas/productos">
+                <q-item clickable v-ripple to="/gestionar-propuestas">
                   <q-item-section avatar>
-                    <q-icon name="shopping_cart" />
+                    <q-icon name="attach_money" />
                   </q-item-section>
                   <q-item-section> Productos </q-item-section>
                 </q-item>
