@@ -37,15 +37,6 @@
                 color="negative"
                 @click="mostrarConfirmacionEliminar(props.row)"
               />
-              <q-btn
-                flat
-                round
-                dense
-                icon="search"
-                color="accent"
-                @click="evaluarCliente(props.row)"
-                label="Evaluar"
-              />
             </q-td>
           </template>
         </q-table>
@@ -79,25 +70,38 @@
             v-model="clienteForm.representante"
             label="Representante"
             filled
+            lazy-rules
+            :rules="[(val) => !!val || 'Este campo es obligatorio']"
           />
           <q-select
             v-model="clienteForm.tipoDocumento"
             :options="tiposDocumento"
             label="Tipo de Documento"
             filled
+            lazy-rules
+            :rules="[(val) => !!val || 'Seleccione un tipo de documento']"
           />
           <q-input
             v-model="clienteForm.numeroDocumento"
             label="Número de Documento"
             filled
+            lazy-rules
+            :rules="[(val) => !!val || 'Este campo es obligatorio']"
           />
           <q-select
             v-model="clienteForm.usuariosAsociados"
-            :options="usuarios"
+            :options="usuariosOptions"
             label="Usuarios Asociados"
             filled
+            emit-value
+            map-options
             multiple
-            use-chips
+            lazy-rules
+            :rules="[
+              (val) =>
+                (val && val.length > 0) ||
+                'Debe seleccionar al menos un usuario asociado',
+            ]"
           />
         </q-card-section>
         <q-card-actions align="right">
@@ -144,9 +148,14 @@ import { useAuthStore } from "../../../stores/auth";
 
 const authStore = useAuthStore();
 const clientes = ref([]);
-const usuarios = ref([]);
+const usuariosOptions = ref([]); // Opciones de usuarios cargados
 const columnas = [
-  { name: "nombre", label: "Nombre", align: "left", field: "nombre" },
+  {
+    name: "nombre",
+    label: "Nombre del Cliente",
+    align: "left",
+    field: "nombre",
+  },
   { name: "rubro", label: "Rubro", align: "left", field: "rubro" },
   {
     name: "representante",
@@ -154,10 +163,21 @@ const columnas = [
     align: "left",
     field: "representante",
   },
+  {
+    name: "tipoDocumento",
+    label: "Tipo de Documento",
+    align: "left",
+    field: "tipoDocumento",
+  },
+  {
+    name: "numeroDocumento",
+    label: "Número de Documento",
+    align: "left",
+    field: "numeroDocumento",
+  },
   { name: "acciones", label: "Acciones", align: "center" },
 ];
 
-const tiposDocumento = ["DNI", "RUC", "Pasaporte", "Carnet de Extranjería"];
 const mostrarModal = ref(false);
 const mostrarConfirmacion = ref(false);
 const mensajeConfirmacion = ref("");
@@ -167,18 +187,17 @@ const clienteForm = ref({
   representante: "",
   tipoDocumento: "",
   numeroDocumento: "",
-  usuariosAsociados: [],
+  usuariosAsociados: [], // Lista de IDs de usuarios asociados
 });
 const modoEdicion = ref(false);
 const clienteSeleccionado = ref(null);
+const tiposDocumento = ["DNI", "RUC", "Pasaporte", "Carnet de Extranjería"];
 let accionPendiente = null;
 
 const cargarClientes = async () => {
   try {
     const respuesta = await axios.get("http://localhost:4000/clientes", {
-      headers: {
-        Authorization: `Bearer ${authStore.token}`,
-      },
+      headers: { Authorization: `Bearer ${authStore.token}` },
     });
     clientes.value = respuesta.data;
   } catch (error) {
@@ -190,16 +209,15 @@ const cargarClientes = async () => {
 const cargarUsuarios = async () => {
   try {
     const respuesta = await axios.get("http://localhost:4000/auth/usuarios", {
-      headers: {
-        Authorization: `Bearer ${authStore.token}`,
-      },
+      headers: { Authorization: `Bearer ${authStore.token}` },
     });
-    usuarios.value = respuesta.data.map((usuario) => ({
+    usuariosOptions.value = respuesta.data.map((usuario) => ({
       label: `${usuario.nombres} ${usuario.apellidos}`,
       value: usuario._id,
     }));
   } catch (error) {
     console.error("Error al cargar los usuarios:", error);
+    alert("Hubo un error al cargar los usuarios.");
   }
 };
 
@@ -225,7 +243,7 @@ const editarCliente = (cliente) => {
 
 const confirmarGuardar = () => {
   mensajeConfirmacion.value = modoEdicion.value
-    ? "¿Está seguro de que desea actualizar este cliente?"
+    ? "¿Está seguro de que desea guardar los cambios en este cliente?"
     : "¿Está seguro de que desea crear este cliente?";
   accionPendiente = guardarCliente;
   mostrarConfirmacion.value = true;
@@ -237,17 +255,11 @@ const guardarCliente = async () => {
       await axios.put(
         `http://localhost:4000/clientes/${clienteSeleccionado.value._id}`,
         clienteForm.value,
-        {
-          headers: {
-            Authorization: `Bearer ${authStore.token}`,
-          },
-        },
+        { headers: { Authorization: `Bearer ${authStore.token}` } },
       );
     } else {
       await axios.post("http://localhost:4000/clientes", clienteForm.value, {
-        headers: {
-          Authorization: `Bearer ${authStore.token}`,
-        },
+        headers: { Authorization: `Bearer ${authStore.token}` },
       });
     }
     alert("Cliente guardado correctamente.");
@@ -269,9 +281,7 @@ const mostrarConfirmacionEliminar = (cliente) => {
 const eliminarCliente = async (id) => {
   try {
     await axios.delete(`http://localhost:4000/clientes/${id}`, {
-      headers: {
-        Authorization: `Bearer ${authStore.token}`,
-      },
+      headers: { Authorization: `Bearer ${authStore.token}` },
     });
     alert("Cliente eliminado correctamente.");
     cargarClientes();
@@ -281,23 +291,10 @@ const eliminarCliente = async (id) => {
   }
 };
 
-const evaluarCliente = async (cliente) => {
-  try {
-    const respuesta = await axios.post(
-      `http://localhost:4000/clientes/${cliente._id}/evaluar`,
-      null,
-      {
-        headers: {
-          Authorization: `Bearer ${authStore.token}`,
-        },
-      },
-    );
-    alert(
-      `Evaluación completada. Cliente ${respuesta.data.cliente.esPotencial ? "es" : "no es"} potencial.`,
-    );
-  } catch (error) {
-    console.error("Error al evaluar el cliente:", error);
-    alert("Hubo un error al evaluar el cliente.");
+const confirmarAccion = async () => {
+  mostrarConfirmacion.value = false;
+  if (accionPendiente) {
+    await accionPendiente();
   }
 };
 
@@ -308,13 +305,6 @@ const cerrarModal = () => {
 const cerrarConfirmacion = () => {
   mostrarConfirmacion.value = false;
   accionPendiente = null;
-};
-
-const confirmarAccion = async () => {
-  mostrarConfirmacion.value = false;
-  if (accionPendiente) {
-    await accionPendiente();
-  }
 };
 
 onMounted(() => {
