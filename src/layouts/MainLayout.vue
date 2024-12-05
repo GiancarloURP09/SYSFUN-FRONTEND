@@ -111,7 +111,7 @@
                   <q-item-section avatar>
                     <q-icon name="attach_money" />
                   </q-item-section>
-                  <q-item-section> Productos </q-item-section>
+                  <q-item-section> Propuestas </q-item-section>
                 </q-item>
 
                 <q-item clickable v-ripple to="/ventas/ventas">
