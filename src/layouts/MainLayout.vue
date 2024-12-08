@@ -114,11 +114,11 @@
                   <q-item-section> Propuestas </q-item-section>
                 </q-item>
 
-                <q-item clickable v-ripple to="/ventas/ventas">
+                <q-item clickable v-ripple to="/gestionar-contratos">
                   <q-item-section avatar>
                     <q-icon name="attach_money" />
                   </q-item-section>
-                  <q-item-section> Ventas </q-item-section>
+                  <q-item-section> Contratos </q-item-section>
                 </q-item>
               </q-list>
             </q-expansion-item>
@@ -165,7 +165,7 @@
                   <q-item-section> Tareas </q-item-section>
                 </q-item>
 
-                <q-item clickable v-ripple to="/desarrollo/proyectos">
+                <q-item clickable v-ripple to="/gestionar-proyectos">
                   <q-item-section avatar>
                     <q-icon name="folder" />
                   </q-item-section>
