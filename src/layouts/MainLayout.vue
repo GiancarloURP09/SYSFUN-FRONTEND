@@ -227,7 +227,7 @@ import { ref, onMounted } from "vue";
 import { useAuthStore } from "../stores/auth";
 import { useRouter } from "vue-router"; // Importar useRouter
 import axios from "axios";
-
+import api from "../api";
 defineOptions({
   name: "MainLayout",
 });
@@ -249,15 +249,12 @@ const cerrarSesion = () => {
 onMounted(async () => {
   if (authStore.usuario) {
     try {
-      const response = await axios.get(
-        `http://localhost:4000/auth/imagen/${authStore.usuario._id}`,
-        {
-          headers: {
-            Authorization: authStore.token,
-          },
-          responseType: "blob", // Especificar que la respuesta es un blob
+      const response = await api.get(`/auth/imagen/${authStore.usuario._id}`, {
+        headers: {
+          Authorization: authStore.token,
         },
-      );
+        responseType: "blob", // Especificar que la respuesta es un blob
+      });
       const imageUrl = URL.createObjectURL(response.data); // Crear una URL para el blob
       imagenUsuario.value = imageUrl;
     } catch (error) {

@@ -149,7 +149,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "../../../stores/auth";
-
+import api from "../../../api";
 const authStore = useAuthStore();
 const contratos = ref([]);
 const clientesOptions = ref([]);
@@ -193,7 +193,7 @@ const contratoSeleccionado = ref(null);
 
 const cargarContratos = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/contratos", {
+    const respuesta = await api.get("/contratos", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     contratos.value = respuesta.data;
@@ -205,7 +205,7 @@ const cargarContratos = async () => {
 
 const cargarClientes = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/clientes", {
+    const respuesta = await api.get("/clientes", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     clientesOptions.value = respuesta.data.map((cliente) => ({
@@ -220,7 +220,7 @@ const cargarClientes = async () => {
 
 const cargarProyectos = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/proyectos", {
+    const respuesta = await api.get("/proyectos", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     proyectosOptions.value = respuesta.data.map((proyecto) => ({
@@ -273,12 +273,12 @@ const guardarContrato = async () => {
     documentos.value.forEach((doc) => formData.append("documentos", doc.file));
 
     const url = modoEdicion.value
-      ? `http://localhost:4000/contratos/${contratoSeleccionado.value._id}`
-      : "http://localhost:4000/contratos";
+      ? `/contratos/${contratoSeleccionado.value._id}`
+      : "/contratos";
 
     const method = modoEdicion.value ? "put" : "post";
 
-    await axios[method](url, formData, {
+    await api[method](url, formData, {
       headers: {
         Authorization: `Bearer ${authStore.token}`,
         "Content-Type": "multipart/form-data",
@@ -303,10 +303,9 @@ const mostrarConfirmacionEliminar = (contrato) => {
 
 const eliminarContrato = async () => {
   try {
-    await axios.delete(
-      `http://localhost:4000/contratos/${contratoSeleccionado.value._id}`,
-      { headers: { Authorization: `Bearer ${authStore.token}` } },
-    );
+    await axios.delete(`/contratos/${contratoSeleccionado.value._id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` },
+    });
     alert("Contrato eliminado correctamente.");
     cargarContratos();
   } catch (error) {

@@ -142,7 +142,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "../../../stores/auth";
-
+import api from "../../../api";
 const authStore = useAuthStore();
 const proyectos = ref([]);
 const clientesOptions = ref([]);
@@ -177,7 +177,7 @@ const proyectoSeleccionado = ref(null);
 
 const cargarProyectos = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/proyectos", {
+    const respuesta = await api.get("/proyectos", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     proyectos.value = respuesta.data;
@@ -189,7 +189,7 @@ const cargarProyectos = async () => {
 
 const cargarClientes = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/clientes", {
+    const respuesta = await api.get("/clientes", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     clientesOptions.value = respuesta.data.map((cliente) => ({
@@ -204,7 +204,7 @@ const cargarClientes = async () => {
 
 const cargarUsuarios = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/auth/usuarios", {
+    const respuesta = await api.get("/auth/usuarios", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     usuariosOptions.value = respuesta.data.map((usuario) => ({
@@ -248,13 +248,13 @@ const confirmarGuardar = () => {
 const guardarProyecto = async () => {
   try {
     if (modoEdicion.value) {
-      await axios.put(
-        `http://localhost:4000/proyectos/${proyectoSeleccionado.value._id}`,
+      await api.put(
+        `/proyectos/${proyectoSeleccionado.value._id}`,
         proyectoForm.value,
         { headers: { Authorization: `Bearer ${authStore.token}` } },
       );
     } else {
-      await axios.post("http://localhost:4000/proyectos", proyectoForm.value, {
+      await api.post("/proyectos", proyectoForm.value, {
         headers: { Authorization: `Bearer ${authStore.token}` },
       });
     }
@@ -276,10 +276,9 @@ const mostrarConfirmacionEliminar = (proyecto) => {
 
 const eliminarProyecto = async () => {
   try {
-    await axios.delete(
-      `http://localhost:4000/proyectos/${proyectoSeleccionado.value._id}`,
-      { headers: { Authorization: `Bearer ${authStore.token}` } },
-    );
+    await api.delete(`/proyectos/${proyectoSeleccionado.value._id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` },
+    });
     alert("Proyecto eliminado correctamente.");
     cargarProyectos();
   } catch (error) {

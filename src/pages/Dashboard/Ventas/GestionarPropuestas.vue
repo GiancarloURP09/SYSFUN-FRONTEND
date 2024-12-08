@@ -174,7 +174,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "../../../stores/auth";
-
+import api from "../../../api";
 const authStore = useAuthStore();
 const propuestas = ref([]);
 const clientesOptions = ref([]);
@@ -218,7 +218,7 @@ const estadoSeleccionado = ref("");
 
 const cargarPropuestas = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/propuestas", {
+    const respuesta = await api.get("/propuestas", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     propuestas.value = respuesta.data;
@@ -230,7 +230,7 @@ const cargarPropuestas = async () => {
 
 const cargarClientes = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/clientes", {
+    const respuesta = await api.get("/clientes", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     clientesOptions.value = respuesta.data.map((cliente) => ({
@@ -275,19 +275,15 @@ const confirmarGuardar = () => {
 const guardarPropuesta = async () => {
   try {
     if (modoEdicion.value) {
-      await axios.put(
-        `http://localhost:4000/propuestas/${propuestaSeleccionada.value._id}`,
+      await api.put(
+        `/propuestas/${propuestaSeleccionada.value._id}`,
         propuestaForm.value,
         { headers: { Authorization: `Bearer ${authStore.token}` } },
       );
     } else {
-      await axios.post(
-        "http://localhost:4000/propuestas",
-        propuestaForm.value,
-        {
-          headers: { Authorization: `Bearer ${authStore.token}` },
-        },
-      );
+      await api.post("/propuestas", propuestaForm.value, {
+        headers: { Authorization: `Bearer ${authStore.token}` },
+      });
     }
     alert("Propuesta guardada correctamente.");
     cerrarModal();
@@ -307,12 +303,9 @@ const mostrarConfirmacionEliminar = (propuesta) => {
 
 const eliminarPropuesta = async () => {
   try {
-    await axios.delete(
-      `http://localhost:4000/propuestas/${propuestaSeleccionada.value._id}`,
-      {
-        headers: { Authorization: `Bearer ${authStore.token}` },
-      },
-    );
+    await api.delete(`/propuestas/${propuestaSeleccionada.value._id}`, {
+      headers: { Authorization: `Bearer ${authStore.token}` },
+    });
     alert("Propuesta eliminada correctamente.");
     cargarPropuestas();
   } catch (error) {
@@ -329,8 +322,8 @@ const cambiarEstadoPropuesta = (propuesta) => {
 
 const guardarEstado = async () => {
   try {
-    await axios.put(
-      `http://localhost:4000/propuestas/${propuestaSeleccionada.value._id}`,
+    await api.put(
+      `/propuestas/${propuestaSeleccionada.value._id}`,
       { estado: estadoSeleccionado.value },
       { headers: { Authorization: `Bearer ${authStore.token}` } },
     );

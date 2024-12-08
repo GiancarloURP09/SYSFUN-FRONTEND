@@ -348,7 +348,7 @@ import axios from "axios";
 
 const prompt = ref(false);
 const usuarios = ref([]);
-
+import api from "../../../api";
 //Registrar Usuario
 const emit = defineEmits(["close", "usuario-creado"]);
 
@@ -395,7 +395,7 @@ const fechaNacimientoEdit = ref(null);
 
 const obtenerUsuarios = async () => {
   try {
-    const response = await axios.get("http://localhost:4000/auth/usuarios", {
+    const response = await api.get("/auth/usuarios", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -429,14 +429,11 @@ const eliminarUsuario = async (id) => {
 };
 const confirmarEliminacion = async () => {
   try {
-    await axios.delete(
-      `http://localhost:4000/auth/usuario/${usuarioAEliminar.value}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+    await api.delete(`api/auth/usuario/${usuarioAEliminar.value}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-    );
+    });
     obtenerUsuarios(); // Actualizar la lista de usuarios
     mostrarDialogoConfirmacion.value = false; // Cerrar el diálogo
   } catch (error) {
@@ -445,7 +442,7 @@ const confirmarEliminacion = async () => {
 };
 const obtenerRoles = async () => {
   try {
-    const response = await axios.get("http://localhost:4000/roles", {
+    const response = await api.get("/roles", {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -472,16 +469,12 @@ const crearUsuario = async () => {
     formData.append("fecha_de_nacimiento", fechaNacimiento.value);
     formData.append("foto_de_colaborador", imagenColaborador.value);
 
-    const response = await axios.post(
-      "http://localhost:4000/auth/registro",
-      formData,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "multipart/form-data",
-        },
+    const response = await api.post("/auth/registro", formData, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        "Content-Type": "multipart/form-data",
       },
-    );
+    });
     console.log("Usuario creado:", response.data);
     prompt.value = false; // Cerrar el diálogo
     obtenerUsuarios(); // Actualizar la lista de usuarios
@@ -512,14 +505,11 @@ watch(usuarioAEditar, (nuevoId) => {
 });
 const obtenerUsuario = async (id) => {
   try {
-    const response = await axios.get(
-      `http://localhost:4000/auth/usuario/${id}`,
-      {
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-        },
+    const response = await api.get(`/auth/usuario/${id}`, {
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
-    );
+    });
     const usuario = response.data;
     nombreEdit.value = usuario.nombres;
     apellidoEdit.value = usuario.apellidos;
@@ -537,8 +527,8 @@ const obtenerUsuario = async (id) => {
 
 const actualizarUsuario = async () => {
   try {
-    await axios.put(
-      `http://localhost:4000/auth/usuario/${usuarioAEditar.value}`,
+    await api.put(
+      `/auth/usuario/${usuarioAEditar.value}`,
       {
         nombres: nombreEdit.value,
         apellidos: apellidoEdit.value,

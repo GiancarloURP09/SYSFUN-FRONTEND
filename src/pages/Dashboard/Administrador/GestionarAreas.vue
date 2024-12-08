@@ -107,7 +107,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "../../../stores/auth";
-
+import api from "../../../api";
 const authStore = useAuthStore();
 const areas = ref([]);
 const columnas = [
@@ -131,7 +131,7 @@ let accionPendiente = null;
 
 const cargarAreas = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/areas", {
+    const respuesta = await api.get("/areas", {
       headers: {
         Authorization: `Bearer ${authStore.token}`, // Asegúrate de que el token esté configurado
       },
@@ -168,18 +168,14 @@ const guardarArea = async () => {
   try {
     if (modoEdicion.value) {
       // Editar área
-      await axios.put(
-        `http://localhost:4000/areas/${areaSeleccionada.value._id}`,
-        areaForm.value,
-        {
-          headers: {
-            Authorization: `Bearer ${authStore.token}`,
-          },
+      await api.put(`/areas/${areaSeleccionada.value._id}`, areaForm.value, {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
         },
-      );
+      });
     } else {
       // Crear nueva área
-      await axios.post("http://localhost:4000/areas", areaForm.value, {
+      await api.post("/areas", areaForm.value, {
         headers: {
           Authorization: `Bearer ${authStore.token}`,
         },
@@ -202,7 +198,7 @@ const mostrarConfirmacionEliminar = (area) => {
 
 const eliminarArea = async (id) => {
   try {
-    await axios.delete(`http://localhost:4000/areas/${id}`, {
+    await api.delete(`/areas/${id}`, {
       headers: {
         Authorization: `Bearer ${authStore.token}`,
       },

@@ -102,7 +102,7 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import Chart from "chart.js/auto"; // Importar Chart.js
 import { useAuthStore } from "../../stores/auth";
-
+import api from "../../api";
 const authStore = useAuthStore();
 
 // Variables reactivas para estadísticas
@@ -115,12 +115,9 @@ const totalAreas = ref(0);
 const cargarEstadisticas = async () => {
   try {
     // Total de clientes
-    const respuestaClientes = await axios.get(
-      "http://localhost:4000/clientes",
-      {
-        headers: { Authorization: `Bearer ${authStore.token}` },
-      },
-    );
+    const respuestaClientes = await api.get("/clientes", {
+      headers: { Authorization: `Bearer ${authStore.token}` },
+    });
     const clientes = respuestaClientes.data;
     totalClientes.value = clientes.length;
     clientesPotenciales.value = clientes.filter(
@@ -128,16 +125,13 @@ const cargarEstadisticas = async () => {
     ).length;
 
     // Total de usuarios
-    const respuestaUsuarios = await axios.get(
-      "http://localhost:4000/auth/usuarios",
-      {
-        headers: { Authorization: `Bearer ${authStore.token}` },
-      },
-    );
+    const respuestaUsuarios = await api.get("/auth/usuarios", {
+      headers: { Authorization: `Bearer ${authStore.token}` },
+    });
     totalUsuarios.value = respuestaUsuarios.data.length;
 
     // Total de áreas
-    const respuestaAreas = await axios.get("http://localhost:4000/areas", {
+    const respuestaAreas = await api.get("/areas", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     totalAreas.value = respuestaAreas.data.length;

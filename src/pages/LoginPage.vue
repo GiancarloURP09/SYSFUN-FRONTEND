@@ -72,7 +72,7 @@ import { ref } from "vue";
 import axios from "axios";
 import { useRouter } from "vue-router";
 import { useAuthStore } from "../stores/auth";
-
+import api from "../api";
 const router = useRouter();
 const authStore = useAuthStore();
 const correo = ref(null);
@@ -80,7 +80,7 @@ const contrasena = ref(null);
 
 const iniciarSesion = async () => {
   try {
-    const response = await axios.post("http://localhost:4000/auth/login", {
+    const response = await api.post("/auth/login", {
       correo: correo.value,
       contrasena: contrasena.value,
     });
@@ -88,7 +88,7 @@ const iniciarSesion = async () => {
     // Almacenar el token en el store de Pinia
     authStore.setToken(response.data.token);
     // Obtener los datos del usuario
-    const usuarioResponse = await axios.get("http://localhost:4000/auth/me", {
+    const usuarioResponse = await api.get("/auth/me", {
       headers: {
         Authorization: response.data.token, // Incluir el token en la cabecera Authorization
       },

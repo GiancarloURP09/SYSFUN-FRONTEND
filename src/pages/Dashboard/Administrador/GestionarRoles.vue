@@ -119,7 +119,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "../../../stores/auth";
-
+import api from "../../../api";
 const authStore = useAuthStore();
 const roles = ref([]);
 const areas = ref([]);
@@ -144,7 +144,7 @@ let accionPendiente = null;
 
 const cargarRoles = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/roles", {
+    const respuesta = await api.get("/roles", {
       headers: {
         Authorization: `Bearer ${authStore.token}`,
       },
@@ -158,7 +158,7 @@ const cargarRoles = async () => {
 
 const cargarAreas = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/areas", {
+    const respuesta = await api.get("/areas", {
       headers: {
         Authorization: `Bearer ${authStore.token}`,
       },
@@ -195,18 +195,14 @@ const guardarRol = async () => {
   try {
     if (modoEdicion.value) {
       // Editar rol
-      await axios.put(
-        `http://localhost:4000/roles/${rolSeleccionado.value._id}`,
-        rolForm.value,
-        {
-          headers: {
-            Authorization: `Bearer ${authStore.token}`,
-          },
+      await api.put(`/roles/${rolSeleccionado.value._id}`, rolForm.value, {
+        headers: {
+          Authorization: `Bearer ${authStore.token}`,
         },
-      );
+      });
     } else {
       // Crear nuevo rol
-      await axios.post("http://localhost:4000/roles", rolForm.value, {
+      await api.post("/roles", rolForm.value, {
         headers: {
           Authorization: `Bearer ${authStore.token}`,
         },
@@ -229,7 +225,7 @@ const mostrarConfirmacionEliminar = (rol) => {
 
 const eliminarRol = async (id) => {
   try {
-    await axios.delete(`http://localhost:4000/roles/${id}`, {
+    await api.delete(`/roles/${id}`, {
       headers: {
         Authorization: `Bearer ${authStore.token}`,
       },

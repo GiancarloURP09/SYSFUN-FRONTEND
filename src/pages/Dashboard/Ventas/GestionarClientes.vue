@@ -201,7 +201,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import { useAuthStore } from "../../../stores/auth";
-
+import api from "../../../api";
 const authStore = useAuthStore();
 const clientes = ref([]);
 const usuariosOptions = ref([]); // Opciones de usuarios cargados
@@ -247,7 +247,7 @@ const clienteEvaluado = ref({});
 const mostrarEvaluacion = ref(false);
 const cargarClientes = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/clientes", {
+    const respuesta = await api.get("/clientes", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     clientes.value = respuesta.data;
@@ -259,7 +259,7 @@ const cargarClientes = async () => {
 
 const cargarUsuarios = async () => {
   try {
-    const respuesta = await axios.get("http://localhost:4000/auth/usuarios", {
+    const respuesta = await api.get("/auth/usuarios", {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     usuariosOptions.value = respuesta.data.map((usuario) => ({
@@ -278,8 +278,8 @@ const abrirEvaluacion = (cliente) => {
 
 const guardarEvaluacion = async () => {
   try {
-    await axios.put(
-      `http://localhost:4000/clientes/${clienteEvaluado.value._id}`,
+    await api.put(
+      `/clientes/${clienteEvaluado.value._id}`,
       clienteEvaluado.value,
       { headers: { Authorization: `Bearer ${authStore.token}` } },
     );
@@ -327,13 +327,13 @@ const confirmarGuardar = () => {
 const guardarCliente = async () => {
   try {
     if (modoEdicion.value) {
-      await axios.put(
-        `http://localhost:4000/clientes/${clienteSeleccionado.value._id}`,
+      await api.put(
+        `/clientes/${clienteSeleccionado.value._id}`,
         clienteForm.value,
         { headers: { Authorization: `Bearer ${authStore.token}` } },
       );
     } else {
-      await axios.post("http://localhost:4000/clientes", clienteForm.value, {
+      await api.post("/clientes", clienteForm.value, {
         headers: { Authorization: `Bearer ${authStore.token}` },
       });
     }
@@ -355,7 +355,7 @@ const mostrarConfirmacionEliminar = (cliente) => {
 
 const eliminarCliente = async (id) => {
   try {
-    await axios.delete(`http://localhost:4000/clientes/${id}`, {
+    await api.delete(`/clientes/${id}`, {
       headers: { Authorization: `Bearer ${authStore.token}` },
     });
     alert("Cliente eliminado correctamente.");
@@ -367,8 +367,8 @@ const eliminarCliente = async (id) => {
 };
 const evaluarCliente = async (cliente) => {
   try {
-    const respuesta = await axios.post(
-      `http://localhost:4000/clientes/${cliente._id}/evaluar`,
+    const respuesta = await api.post(
+      `/clientes/${cliente._id}/evaluar`,
       {},
       { headers: { Authorization: `Bearer ${authStore.token}` } },
     );
