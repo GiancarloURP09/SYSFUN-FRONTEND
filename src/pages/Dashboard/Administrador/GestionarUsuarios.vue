@@ -429,7 +429,7 @@ const eliminarUsuario = async (id) => {
 };
 const confirmarEliminacion = async () => {
   try {
-    await api.delete(`api/auth/usuario/${usuarioAEliminar.value}`, {
+    await api.delete(`/auth/usuario/${usuarioAEliminar.value}`, {
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
